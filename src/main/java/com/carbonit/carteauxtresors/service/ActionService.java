@@ -61,22 +61,26 @@ public class ActionService {
             return Pair.of(adventure, currentAdventurer);
         }
         Pair<Position, Orientation> newPosition = moveService.updatePosition(adventure.getMapDimensions(), adventure.getMountains(), adventure.getAdventurers(), currentAdventurer, currentAction);
-        Pair<List<Treasure>, Long> treasuresAndCollectedTreasures = collectTreasure(adventure.getTreasures(), currentAdventurer.getPosition().getFirst());
+        Pair<List<Treasure>, Long> treasuresAndCollectedTreasures = collectTreasure(adventure.getTreasures(), newPosition.getFirst(), currentAdventurer.getNumberOfCollectedTreasures(), currentAdventurer.getPosition().getFirst());
 
         currentAdventurer = currentAdventurer.toBuilder()
                 .position(newPosition)
                 .numberOfCollectedTreasures(treasuresAndCollectedTreasures.getSecond())
                 .build();
-        adventure.toBuilder()
+        adventure = adventure.toBuilder()
                 .treasures(treasuresAndCollectedTreasures.getFirst())
                 .build();
 
         return Pair.of(adventure, currentAdventurer);
     }
 
-    public Pair<List<Treasure>, Long> collectTreasure(List<Treasure> treasures, Position adventurerPosition) {
+    public Pair<List<Treasure>, Long> collectTreasure(List<Treasure> treasures, Position adventurerPosition, Long numberOfCollectedTreasures, Position lastPosition) {
         List<Treasure> updatedTreasures = new ArrayList<>();
-        AtomicLong numberOfCollectedTreasure = new AtomicLong();
+        AtomicLong numberOfCollectedTreasure = new AtomicLong(numberOfCollectedTreasures);
+
+        if(isSamePosition(lastPosition, adventurerPosition)) {
+            return Pair.of(treasures, numberOfCollectedTreasures);
+        }
         treasures.forEach(treasure -> {
             if (isSamePosition(treasure.getPosition(), adventurerPosition) && treasure.getNumber() > 0) {
                 log.info("Adventurer collected one treasure on case {} {}", adventurerPosition.getX(), adventurerPosition.getY());
