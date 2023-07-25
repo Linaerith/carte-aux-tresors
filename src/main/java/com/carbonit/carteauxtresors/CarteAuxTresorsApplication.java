@@ -64,7 +64,7 @@ public class CarteAuxTresorsApplication {
 
         log.info("Adventure has finished {}", finishedAdventure);
 
-        String absoluteFilePath = String.format(RESULT_FILE_NAME, absolutePath, LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+        String absoluteFilePath = String.format(RESULT_FILE_NAME, absolutePath, LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
 
 		List<String> results = AdventureDTOMapper.mapAdventureDTOToString(finishedAdventure);
         try {
