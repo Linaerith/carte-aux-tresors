@@ -8,6 +8,7 @@ import com.carbonit.carteauxtresors.enums.Action;
 import com.carbonit.carteauxtresors.enums.Orientation;
 import com.carbonit.carteauxtresors.service.turns.MoveService;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -84,10 +85,12 @@ public class ActionService {
         treasures.forEach(treasure -> {
             if (isSamePosition(treasure.getPosition(), adventurerPosition) && treasure.getNumber() > 0) {
                 log.info("Adventurer collected one treasure on case {} {}", adventurerPosition.getX(), adventurerPosition.getY());
-                updatedTreasures.add(Treasure.builder()
-                        .position(treasure.getPosition())
-                        .number(treasure.getNumber() - 1)
-                        .build());
+                if(treasure.getNumber() - 1 > 0) {
+                    updatedTreasures.add(Treasure.builder()
+                            .position(treasure.getPosition())
+                            .number(treasure.getNumber() - 1)
+                            .build());
+                }
                 numberOfCollectedTreasure.addAndGet(1);
             } else {
                 updatedTreasures.add(treasure);
