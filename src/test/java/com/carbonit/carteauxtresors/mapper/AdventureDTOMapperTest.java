@@ -11,6 +11,7 @@ import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.util.Pair;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +19,30 @@ import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdventureDTOMapperTest {
+
+    @Test
+    public void given_AdventureDTO_when_mapAdventureDTOToString_return_ListStringFormatted() {
+        Adventurer adventurerFinished = Adventurer.builder()
+                .name("Jim")
+                .position(Pair.of(Position.builder().x(1L).y(1L).build(), Orientation.E))
+                .actions(Collections.emptyList())
+                .numberOfCollectedTreasures(1L)
+                .build();
+        Treasure treasure = Treasure.builder()
+                .position(Position.builder().x(0L).y(2L).build())
+                .number(1L)
+                .build();
+        AdventureDTO adventureDTO = AdventureDTO.builder()
+                .mapDimensions(Position.builder().x(4L).y(3L).build())
+                .treasures(Collections.singletonList(treasure))
+                .mountains(Collections.singletonList(Position.builder().x(0L).y(3L).build()))
+                .adventurers(Collections.singletonList(adventurerFinished))
+                .build();
+
+        List<String> results = AdventureDTOMapper.mapAdventureDTOToString(adventureDTO);
+
+        Assertions.assertThat(results).containsExactly("C - 4 - 3", "M - 0 - 3", "T - 0 - 2 - 1", "A - Jim - 1 - 1 - E - 1");
+    }
 
     @Test
     public void given_ListStringCorrectlyFormattedWithUnknownObject_when_mapAdventureDTO_return_AdventureDTO() {
@@ -131,14 +156,14 @@ public class AdventureDTOMapperTest {
     public void given_ListStringNotCorrectlyFormatted_when_mapAdventurersFromInfos_return_IllegalArgumentException() {
         List<String> infos = List.of("A", "Jim", "5", "4", "O");
         AdventureDTO adventureDTO = AdventureDTO.builder().build();
-        AdventureDTOMapper.mapMapDimensionsFromInfos(adventureDTO, infos);
+        AdventureDTOMapper.mapAdventurersFromInfos(adventureDTO, infos);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void given_ElementInListStringNotCorrectlyFormatted_when_mapAdventurersFromInfos_return_IllegalArgumentException() {
         List<String> infos = Arrays.asList("A", "Jim", "5", "4", "O", "test");
         AdventureDTO adventureDTO = AdventureDTO.builder().build();
-        AdventureDTOMapper.mapMapDimensionsFromInfos(adventureDTO, infos);
+        AdventureDTOMapper.mapAdventurersFromInfos(adventureDTO, infos);
     }
 
     @Test
@@ -222,7 +247,7 @@ public class AdventureDTOMapperTest {
     }
 
     @Test
-    public void given_ListStringCorrectlyFormatted_when_mapMountainsFromInfos_return_AdventureDTO() {
+    public void given_ListStringCorrectlyFormatted_when_mapMountainFromInfos_return_AdventureDTO() {
         List<String> infos = Arrays.asList("M", "1", "2");
         AdventureDTO adventureDTO = AdventureDTO.builder()
                 .mapDimensions(Position.builder().x(6L).y(5L).build())
@@ -263,7 +288,7 @@ public class AdventureDTOMapperTest {
     public void given_ListStringNotCorrectlyFormatted_when_mapMountainFromInfos_return_IllegalArgumentException() {
         List<String> infos = List.of("A", "Jim", "5", "4", "O");
         AdventureDTO adventureDTO = AdventureDTO.builder().build();
-        AdventureDTOMapper.mapTreasuresFromInfos(adventureDTO, infos);
+        AdventureDTOMapper.mapMountainFromInfos(adventureDTO, infos);
     }
 
     @Test(expected = IllegalArgumentException.class)
