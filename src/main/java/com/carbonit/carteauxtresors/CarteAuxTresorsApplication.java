@@ -10,9 +10,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,11 +23,16 @@ import java.util.Scanner;
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class CarteAuxTresorsApplication {
 
-    private static final String ABSOLUTE_PATH = "/home/lindsay/Documents/";
+    //private static final String ABSOLUTE_PATH = "/home/lindsay/Documents/";
+    private static final String RESULT_FILE_NAME = "%sAdventureResults-%s.txt";
+
+    private static final String ABSOLUTE_PATH = "server.absolute-path";
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(CarteAuxTresorsApplication.class, args);
         ActionService actionService = applicationContext.getBean(ActionService.class);
+        Environment env= applicationContext.getBean(Environment.class);
+        String absolutePath = env.getProperty(ABSOLUTE_PATH);
 
         log.info("********************************************************");
         log.info("*        Application carte aux trésors démarrée        *");
@@ -57,7 +64,7 @@ public class CarteAuxTresorsApplication {
 
         log.info("Adventure has finished {}", finishedAdventure);
 
-        String absoluteFilePath = String.format("%sAdventureResults-%s.txt", ABSOLUTE_PATH, LocalDateTime.now());
+        String absoluteFilePath = String.format(RESULT_FILE_NAME, absolutePath, LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
 
 		List<String> results = AdventureDTOMapper.mapAdventureDTOToString(finishedAdventure);
         try {
