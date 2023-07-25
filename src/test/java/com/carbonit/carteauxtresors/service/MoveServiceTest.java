@@ -4,7 +4,6 @@ import com.carbonit.carteauxtresors.entity.Adventurer;
 import com.carbonit.carteauxtresors.entity.Position;
 import com.carbonit.carteauxtresors.enums.Action;
 import com.carbonit.carteauxtresors.enums.Orientation;
-import com.carbonit.carteauxtresors.service.turns.MoveService;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Before;
 import org.junit.Test;

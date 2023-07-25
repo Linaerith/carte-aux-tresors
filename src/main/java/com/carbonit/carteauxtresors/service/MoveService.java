@@ -1,4 +1,4 @@
-package com.carbonit.carteauxtresors.service.turns;
+package com.carbonit.carteauxtresors.service;
 
 import com.carbonit.carteauxtresors.entity.Adventurer;
 import com.carbonit.carteauxtresors.entity.Position;
